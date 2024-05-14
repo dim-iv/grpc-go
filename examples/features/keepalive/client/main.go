@@ -35,7 +35,7 @@ import (
 var addr = flag.String("addr", "localhost:50052", "the address to connect to")
 
 var kacp = keepalive.ClientParameters{
-	Time:                60 * time.Second, // send pings every 10 seconds if there is no activity
+	Time:                50 * time.Second, // send pings every 10 seconds if there is no activity
 	Timeout:             10 * time.Second,      // wait 1 second for ping ack before considering the connection dead
 	PermitWithoutStream: true,             // send pings even without active streams
 }
