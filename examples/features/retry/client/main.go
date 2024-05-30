@@ -68,7 +68,9 @@ func main() {
 
 	c := pb.NewEchoClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 1*time.Second)
+	contextTimeout := 17 * time.Second // [dim]: above 15 minutes
+
+	ctx, cancel := context.WithTimeout(context.Background(), contextTimeout)
 	defer cancel()
 
 	reply, err := c.UnaryEcho(ctx, &pb.EchoRequest{Message: "Try and Success"})
@@ -76,4 +78,5 @@ func main() {
 		log.Fatalf("UnaryEcho error: %v", err)
 	}
 	log.Printf("UnaryEcho reply: %v", reply)
+	select {} // wait forever
 }
