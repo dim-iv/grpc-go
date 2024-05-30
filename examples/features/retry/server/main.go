@@ -26,10 +26,12 @@ import (
 	"log"
 	"net"
 	"sync"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
+	"google.golang.org/grpc/keepalive"
 
 	pb "google.golang.org/grpc/examples/features/proto/echo"
 )
@@ -77,7 +79,19 @@ func main() {
 	}
 	fmt.Println("listen on address", address)
 
-	s := grpc.NewServer()
+	s := grpc.NewServer(
+		grpc.KeepaliveParams(keepalive.ServerParameters{
+			MaxConnectionIdle:     4 * time.Minute,
+			MaxConnectionAge:      30 * time.Minute,
+			MaxConnectionAgeGrace: 2 * time.Minute,
+			Time:                  30 * time.Second,
+			Timeout:               10 * time.Second,
+		}),
+		grpc.KeepaliveEnforcementPolicy(keepalive.EnforcementPolicy{
+			MinTime:             10 * time.Second,
+			PermitWithoutStream: true,
+		}),
+        )
 
 	// Configure server to pass every fourth RPC;
 	// client is configured to make four attempts.
