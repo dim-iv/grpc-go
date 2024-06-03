@@ -68,8 +68,8 @@ func main() {
 
 	c := pb.NewEchoClient(conn)
 
-	//contextTimeout := 17 * time.Second // [dim]: above 15 minutes
-	contextTimeout := 1 * time.Second // [dim]: exactly 1 minute
+	//contextTimeout := 17 * time.Minute // [dim]: above 15 minutes
+	contextTimeout := 1 * time.Minute // [dim]: exactly 1 minute
 
 	ctx, cancel := context.WithTimeout(context.Background(), contextTimeout)
 	defer cancel()

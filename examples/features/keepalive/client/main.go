@@ -51,7 +51,10 @@ func main() {
 
 	c := pb.NewEchoClient(conn)
 
-	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Minute)
+	timeout := 17 * time.Minute
+	//timeout := 3 * time.Minute
+
+	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
 	fmt.Println("Performing unary request")
 	res, err := c.UnaryEcho(ctx, &pb.EchoRequest{Message: "keepalive demo"})
