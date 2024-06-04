@@ -61,7 +61,8 @@ func testRequest(c pb.EchoClient) {
 
 	reply, err := c.UnaryEcho(ctx, &pb.EchoRequest{Message: "Try and Success"})
 	if err != nil {
-		log.Fatalf("UnaryEcho error: %v", err)
+		//log.Fatalf("UnaryEcho error: %v", err)
+		log.Printf("UnaryEcho error: %v", err)
 	}
 	log.Printf("UnaryEcho reply: %v", reply)
 }
