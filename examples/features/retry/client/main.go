@@ -66,6 +66,13 @@ func testRequest(c pb.EchoClient) {
 	log.Printf("UnaryEcho reply: %v", reply)
 }
 
+func waitCountdown(waitTime int) {
+        for i := 1; i <= waitTime; i++ {
+            log.Printf("... waiting %d / %d ...", i, waitTime)
+            time.Sleep(1 * time.Second)
+        }
+}
+
 func main() {
 	flag.Parse()
 
@@ -86,12 +93,15 @@ func main() {
         testRequest(c)
 
         log.Printf("Sleeping (time to drop)...")
-        waitTime := 5
-        for i := 1; i <= waitTime; i++ {
-            log.Printf("... waiting %d / %d ...", i, waitTime)
-            time.Sleep(1 * time.Second)
-        }
+        waitCountdown(7)
+
         log.Printf("Second request...")
+        testRequest(c)
+
+        log.Printf("Sleeping (time to drop)...")
+        waitCountdown(7)
+
+        log.Printf("Third request...")
         testRequest(c)
 
 	select {} // wait forever
