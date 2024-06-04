@@ -84,19 +84,15 @@ func main() {
 
         log.Printf("First request...")
         testRequest(c)
-        log.Printf("Sleeping (time to drop)")
-        time.Sleep(5 * time.Second)
+
+        log.Printf("Sleeping (time to drop)...")
+        waitTime := 5
+        for i := 1; i <= waitTime; i++ {
+            log.Printf("... waiting %d / %d ...", i, waitTime)
+            time.Sleep(1 * time.Second)
+        }
         log.Printf("Second request...")
         testRequest(c)
-
-	//ctx, cancel := context.WithTimeout(context.Background(), contextTimeout)
-	//defer cancel()
-	//
-	//reply, err := c.UnaryEcho(ctx, &pb.EchoRequest{Message: "Try and Success"})
-	//if err != nil {
-	//	log.Fatalf("UnaryEcho error: %v", err)
-	//}
-	//log.Printf("UnaryEcho reply: %v", reply)
 
 	select {} // wait forever
 }
