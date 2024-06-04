@@ -52,6 +52,20 @@ func retryDial() (*grpc.ClientConn, error) {
 	return grpc.NewClient(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithDefaultServiceConfig(retryPolicy))
 }
 
+func testRequest(c pb.EchoClient) {
+	contextTimeout := 17 * time.Minute // [dim]: above 15 minutes
+	//contextTimeout := 1 * time.Minute // [dim]: exactly 1 minute
+
+	ctx, cancel := context.WithTimeout(context.Background(), contextTimeout)
+	defer cancel()
+
+	reply, err := c.UnaryEcho(ctx, &pb.EchoRequest{Message: "Try and Success"})
+	if err != nil {
+		log.Fatalf("UnaryEcho error: %v", err)
+	}
+	log.Printf("UnaryEcho reply: %v", reply)
+}
+
 func main() {
 	flag.Parse()
 
@@ -68,16 +82,21 @@ func main() {
 
 	c := pb.NewEchoClient(conn)
 
-	//contextTimeout := 17 * time.Minute // [dim]: above 15 minutes
-	contextTimeout := 1 * time.Minute // [dim]: exactly 1 minute
+        log.Printf("First request...")
+        testRequest(c)
+        log.Printf("Sleeping (time to drop)")
+        time.Sleep(5 * time.Second)
+        log.Printf("Second request...")
+        testRequest(c)
 
-	ctx, cancel := context.WithTimeout(context.Background(), contextTimeout)
-	defer cancel()
+	//ctx, cancel := context.WithTimeout(context.Background(), contextTimeout)
+	//defer cancel()
+	//
+	//reply, err := c.UnaryEcho(ctx, &pb.EchoRequest{Message: "Try and Success"})
+	//if err != nil {
+	//	log.Fatalf("UnaryEcho error: %v", err)
+	//}
+	//log.Printf("UnaryEcho reply: %v", reply)
 
-	reply, err := c.UnaryEcho(ctx, &pb.EchoRequest{Message: "Try and Success"})
-	if err != nil {
-		log.Fatalf("UnaryEcho error: %v", err)
-	}
-	log.Printf("UnaryEcho reply: %v", reply)
 	select {} // wait forever
 }
