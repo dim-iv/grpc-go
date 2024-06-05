@@ -22,7 +22,6 @@ package main
 import (
 	"context"
 	"flag"
-	"fmt"
 	"log"
 	"time"
 
@@ -40,6 +39,33 @@ var kacp = keepalive.ClientParameters{
 	PermitWithoutStream: true,             // send pings even without active streams
 }
 
+func testRequest(c pb.EchoClient) {
+	contextTimeout := 17 * time.Minute // [dim]: above 15 minutes
+	//contextTimeout := 1 * time.Minute // [dim]: exactly 1 minute
+
+	ctx, cancel := context.WithTimeout(context.Background(), contextTimeout)
+	defer cancel()
+
+	reply, err := c.UnaryEcho(ctx, &pb.EchoRequest{Message: "keepalive demo"})
+	if err != nil {
+		log.Printf("UnaryEcho error: %v", err)
+	}
+	log.Printf("UnaryEcho reply: %v", reply)
+}
+
+func waitCountdown(waitTime int) {
+        for i := 1; i <= waitTime; i++ {
+            log.Printf("... waiting %d / %d ...", i, waitTime)
+            time.Sleep(1 * time.Second)
+        }
+}
+
+func showSomeSpace() {
+        log.Printf("")
+        log.Printf("")
+        log.Printf("")
+}
+
 func main() {
 	flag.Parse()
 
@@ -51,16 +77,16 @@ func main() {
 
 	c := pb.NewEchoClient(conn)
 
-	timeout := 17 * time.Minute
-	//timeout := 3 * time.Minute
+        requestCount := 1
 
-	ctx, cancel := context.WithTimeout(context.Background(), timeout)
-	defer cancel()
-	fmt.Println("Performing unary request")
-	res, err := c.UnaryEcho(ctx, &pb.EchoRequest{Message: "keepalive demo"})
-	if err != nil {
-		log.Fatalf("unexpected error from UnaryEcho: %v", err)
-	}
-	fmt.Println("RPC response:", res)
+        for {
+            showSomeSpace()
+            log.Printf("Next request (%d)...", requestCount)
+            log.Printf("... Waiting (time to drop)...")
+            waitCountdown(7)
+            testRequest(c)
+            requestCount++;
+        }
+
 	select {} // Block forever; run with GODEBUG=http2debug=2 to observe ping frames and GOAWAYs due to idleness.
 }
