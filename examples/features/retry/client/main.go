@@ -49,7 +49,12 @@ var (
 
 // use grpc.WithDefaultServiceConfig() to set service config
 func retryDial() (*grpc.ClientConn, error) {
-	return grpc.NewClient(*addr, grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithDefaultServiceConfig(retryPolicy))
+	return grpc.NewClient(
+            *addr,
+            grpc.WithTransportCredentials(insecure.NewCredentials()),
+            grpc.WithDefaultServiceConfig(retryPolicy),
+            grpc.WithDefaultServiceConfig(`{"loadBalancingConfig": [{"round_robin":{}}]}`),
+        )
 }
 
 func testRequest(c pb.EchoClient) {
