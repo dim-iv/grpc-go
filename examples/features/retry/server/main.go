@@ -29,8 +29,8 @@ import (
 	"time"
 
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
+	//"google.golang.org/grpc/codes"
+	//"google.golang.org/grpc/status"
 	"google.golang.org/grpc/keepalive"
 
 	pb "google.golang.org/grpc/examples/features/proto/echo"
@@ -48,22 +48,22 @@ type failingServer struct {
 
 // this method will fail reqModulo - 1 times RPCs and return status code Unavailable,
 // and succeeded RPC on reqModulo times.
-func (s *failingServer) maybeFailRequest() error {
-	s.mu.Lock()
-	defer s.mu.Unlock()
-	s.reqCounter++
-	if (s.reqModulo > 0) && (s.reqCounter%s.reqModulo == 0) {
-		return nil
-	}
-
-	return status.Errorf(codes.Unavailable, "maybeFailRequest: failing it")
-}
+//func (s *failingServer) maybeFailRequest() error {
+//	s.mu.Lock()
+//	defer s.mu.Unlock()
+//	s.reqCounter++
+//	if (s.reqModulo > 0) && (s.reqCounter%s.reqModulo == 0) {
+//		return nil
+//	}
+//
+//	return status.Errorf(codes.Unavailable, "maybeFailRequest: failing it")
+//}
 
 func (s *failingServer) UnaryEcho(ctx context.Context, req *pb.EchoRequest) (*pb.EchoResponse, error) {
-	if err := s.maybeFailRequest(); err != nil {
-		log.Println("request failed count:", s.reqCounter)
-		return nil, err
-	}
+	//if err := s.maybeFailRequest(); err != nil {
+	//	log.Println("request failed count:", s.reqCounter)
+	//	return nil, err
+	//}
 
 	log.Println("request succeeded count:", s.reqCounter)
 	return &pb.EchoResponse{Message: req.Message}, nil
