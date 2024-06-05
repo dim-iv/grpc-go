@@ -90,20 +90,12 @@ func main() {
 
 	c := pb.NewEchoClient(conn)
 
-        log.Printf("First request...")
-        testRequest(c)
-
-        log.Printf("Sleeping (time to drop)...")
-        waitCountdown(7)
-
-        log.Printf("Second request...")
-        testRequest(c)
-
-        log.Printf("Sleeping (time to drop)...")
-        waitCountdown(7)
-
-        log.Printf("Third request...")
-        testRequest(c)
+        for {
+            log.Printf("Next request...")
+            log.Printf("... Waiting (time to drop)...")
+            waitCountdown(7)
+            testRequest(c)
+        }
 
 	select {} // wait forever
 }
