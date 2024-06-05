@@ -74,6 +74,12 @@ func waitCountdown(waitTime int) {
         }
 }
 
+func showSomeSpace() {
+        log.Printf("")
+        log.Printf("")
+        log.Printf("")
+}
+
 func main() {
 	flag.Parse()
 
@@ -89,12 +95,15 @@ func main() {
 	}()
 
 	c := pb.NewEchoClient(conn)
+        requestCount := 1
 
         for {
-            log.Printf("Next request...")
+            showSomeSpace()
+            log.Printf("Next request (%d)...", requestCount)
             log.Printf("... Waiting (time to drop)...")
             waitCountdown(7)
             testRequest(c)
+            requestCount++;
         }
 
 	select {} // wait forever
