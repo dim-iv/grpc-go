@@ -52,7 +52,8 @@ func retryDial() (*grpc.ClientConn, error) {
 	return grpc.NewClient(
             *addr,
             grpc.WithTransportCredentials(insecure.NewCredentials()),
-            grpc.WithDefaultServiceConfig(retryPolicy),
+            // [dim]: disable retryPolicy since we don't use it for our clients
+            //grpc.WithDefaultServiceConfig(retryPolicy),
             grpc.WithDefaultServiceConfig(`{"loadBalancingConfig": [{"round_robin":{}}]}`),
         )
 }
